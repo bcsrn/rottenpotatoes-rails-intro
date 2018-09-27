@@ -12,9 +12,25 @@ class MoviesController < ApplicationController
 
   def index
     @movies = Movie.order(params[:sort_by])
-    @sort_column = params[:sort_by]
-    
+    @sort_column = params.has_key?(:sort) ? (session[:sort] = params[:sort]) : session[:sort]
+    @all_ratings = Movie.all_ratings.keys
+    @ratings = params[:ratings]
+    if(@ratings != nil)
+      ratings = @ratings
+      session[:ratings] = @ratings
+    else
+      if(!params.has_key?(:commit) && !params.has_key?(:sort))
+        ratings = Movie.all_ratings.keys
+        session[:ratings] = Movie.all_ratings
+      else
+        ratings = session[:ratings].keys
+      end
+    end
+ #   @movies = Movie.order(@sort_column).find_all_by_rating(ratings)
+    @mark  = ratings
   end
+  
+  
 
   def new
     # default: render 'new' template
