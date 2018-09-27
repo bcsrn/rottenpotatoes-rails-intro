@@ -11,7 +11,26 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+#    @movies = Movie.all
+    @movies = Movie.order(params[:sort_by])
+    @sort_column = params[:sort_by]
+    @all_ratings = Movie.all_ratings
+    @ratings = {}
+    if params[:ratings] != nil
+      @ratings = params[:ratings]
+      session[:ratings] = @ratings
+    else 
+      if session[:ratings] != nil
+        @ratings = session[:ratings]
+        redirect_needed = true
+      end
+    end
+    checkedBox = @all_ratings
+    
+    if not @ratings.empty?
+      checkedBox = @ratings.keys
+    end 
+    
   end
 
   def new
