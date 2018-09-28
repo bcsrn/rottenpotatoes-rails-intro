@@ -30,7 +30,31 @@ class MoviesController < ApplicationController
     if not @ratings.empty?
       checkedBox = @ratings.keys
     end 
+    # sort condition
+    if params[:condition] != nil
+      condition = params[:condition]
+      session[:condition] = condition 
+    else
+      if session[:condition] != nil
+        condition = session[:condition]
+        redirect_needed = true
+      end
+    end
     
+    if condition == nil
+      @movies = Movie.where( :conditions => ["rating IN (?)", checkedBox])
+    else
+      @movies = Movie.where( :conditions => ["rating IN (?)", checkedBox], :order => condition)
+    end
+    
+    # change color of table when sorting is finished
+    @high_light = condition
+    # clear session
+    #session.clear
+    
+    if redirect_needed
+      redirect_to movies_path(:ratings => session[:ratings], :condition => session[:condition])
+    end    
   end
 
   def new
