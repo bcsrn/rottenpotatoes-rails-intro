@@ -11,26 +11,52 @@ class MoviesController < ApplicationController
   end
 
   def index
+#    @movies = Movie.all
     @movies = Movie.order(params[:sort_by])
-    @sort_column = params.has_key?(:sort) ? (session[:sort] = params[:sort]) : session[:sort]
-    @all_ratings = Movie.all_ratings.keys
-    @ratings = params[:ratings]
-    if(@ratings != nil)
-      ratings = @ratings
+#    @sort_column = params[:sort_by]
+    @all_ratings = Movie.all_ratings
+    redirect_needed = false
+    @ratings = {}
+    if params[:ratings] != nil
+      @ratings = params[:ratings]
       session[:ratings] = @ratings
-    else
-      if(!params.has_key?(:commit) && !params.has_key?(:sort))
-        ratings = Movie.all_ratings.keys
-        session[:ratings] = Movie.all_ratings
-      else
-        ratings = session[:ratings].keys
+    else 
+      if session[:ratings] != nil
+        @ratings = session[:ratings]
+        redirect_needed = true
       end
     end
- #   @movies = Movie.order(@sort_column).find_all_by_rating(ratings)
-    @mark  = ratings
+    checkedBox = @all_ratings
+    
+    if not @ratings.empty?
+      checkedBox = @ratings.keys
+    end 
+ # sort condition
+    if params[:condition] != nil
+      condition = params[:condition]
+      session[:condition] = condition 
+    else
+      if session[:condition] != nil
+        condition = session[:condition]
+        redirect_needed = true
+      end
+    end
+    if condition == nil
+      @movies = Movie.where("rating IN (?)", params[:ratings].keys)
+    else
+      @movies = Movie.where("rating IN (?)", params[:ratings].keys)
+    end   
+
+    # change color of table when sorting is finished
+    @high_light = condition
+    # clear session
+    #session.clear
+    
+    if redirect_needed
+      redirect_to movies_path(:ratings => session[:ratings], :condition => session[:condition])
+    end
+        
   end
-  
-  
 
   def new
     # default: render 'new' template

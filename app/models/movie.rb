@@ -1,10 +1,13 @@
 class Movie < ActiveRecord::Base
-  attr_accessor :title, :rating, :description, :release_date, :director
+  #static method to get rating enumeration
   def self.all_ratings
-  	result = {}
-  	self.select(:rating).uniq.each do |movie|
-  		result[movie.rating] = 1
-  	end
-  	return result
+    ['G', 'PG', 'PG-13', 'R']
+  end 
+  # return movies by array of checkbox info
+  def self.getMoviesByCheckBoxInfo checked
+    condition = 'rating='
+    checked.each do |elt|
+      condition = condition + elt.to_s
+    end
   end
 end
