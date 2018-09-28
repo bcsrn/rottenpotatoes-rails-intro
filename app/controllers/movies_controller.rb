@@ -42,9 +42,9 @@ class MoviesController < ApplicationController
       end
     end
     if condition == nil
-      @movies = Movie.where("rating IN (?)", checkedBox)
+      @movies = Movie.where("rating IN (?)", params[:ratings])
     else
-      @movies = Movie.where("rating IN (?)", checkedBox)
+      @movies = Movie.where("rating IN (?)", params[:ratings])
     end   
 
     # change color of table when sorting is finished
