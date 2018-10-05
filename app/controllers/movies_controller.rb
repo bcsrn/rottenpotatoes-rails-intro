@@ -13,7 +13,7 @@ class MoviesController < ApplicationController
   def index
 #    @movies = Movie.all
     @movies = Movie.order(params[:sort_by])
-#    @sort_column = params[:sort_by]
+    @sort_column = params[:sort_by]
     @all_ratings = Movie.all_ratings
     redirect_needed = false
     @ratings = {}
