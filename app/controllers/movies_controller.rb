@@ -15,7 +15,9 @@ class MoviesController < ApplicationController
     @movies = Movie.order(params[:sort_by])
     @sort_column = params[:sort_by]
     @all_ratings = Movie.all_ratings
+
     redirect_needed = false
+
     @ratings = {}
     if params[:ratings] != nil
       @ratings = params[:ratings]
@@ -31,6 +33,7 @@ class MoviesController < ApplicationController
     if not @ratings.empty?
       checkedBox = @ratings.keys
     end 
+
  # sort condition
     if params[:condition] != nil
       condition = params[:condition]
@@ -56,6 +59,7 @@ class MoviesController < ApplicationController
       redirect_to movies_path(:ratings => session[:ratings], :condition => session[:condition])
     end
         
+
   end
 
   def new
